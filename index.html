@@ -84,25 +84,29 @@
   const message = document.getElementById("message");
 
   let moveCount = 0;
-  const maxMoves = 5;
+
+  // позиции по углам + центр
+  const positions = [
+    { x: 20, y: 20 }, // левый верхний
+    { x: window.innerWidth - 140, y: 20 }, // правый верхний
+    { x: 20, y: window.innerHeight - 80 }, // левый нижний
+    { x: window.innerWidth - 140, y: window.innerHeight - 80 }, // правый нижний
+    { x: window.innerWidth / 2 - 60, y: window.innerHeight / 2 } // центр
+  ];
 
   noBtn.addEventListener("click", () => {
 
-    if (moveCount < maxMoves) {
-
-      // случайная позиция по экрану
-      const x = Math.random() * (window.innerWidth - 120);
-      const y = Math.random() * (window.innerHeight - 60);
+    if (moveCount < positions.length) {
 
       noBtn.style.position = "absolute";
-      noBtn.style.left = `${x}px`;
-      noBtn.style.top = `${y}px`;
+      noBtn.style.left = positions[moveCount].x + "px";
+      noBtn.style.top = positions[moveCount].y + "px";
 
       moveCount++;
 
     } else {
 
-      // после 5 раз можно скрыть кнопку
+      // после всех прыжков скрываем кнопку
       noBtn.style.display = "none";
 
     }
@@ -111,6 +115,5 @@
   yesBtn.addEventListener("click", () => {
     message.style.display = "block";
   });
-</script>
-</body>
+</script></body>
 </html>
