@@ -85,15 +85,16 @@
 
   let moveCount = 0;
 
-  // позиции по углам + центр
+  // позиции кнопки
   const positions = [
-    { x: 20, y: 20 }, // левый верхний
-    { x: window.innerWidth - 140, y: 20 }, // правый верхний
-    { x: 20, y: window.innerHeight - 80 }, // левый нижний
-    { x: window.innerWidth - 140, y: window.innerHeight - 80 }, // правый нижний
+    { x: 20, y: 20 }, // левый верх
+    { x: window.innerWidth - 140, y: 20 }, // правый верх
+    { x: 20, y: window.innerHeight - 80 }, // левый низ
+    { x: window.innerWidth - 140, y: window.innerHeight - 80 }, // правый низ
     { x: window.innerWidth / 2 - 60, y: window.innerHeight / 2 } // центр
   ];
 
+  // прыжок ТОЛЬКО при нажатии
   noBtn.addEventListener("click", () => {
 
     if (moveCount < positions.length) {
@@ -106,7 +107,6 @@
 
     } else {
 
-      // после всех прыжков скрываем кнопку
       noBtn.style.display = "none";
 
     }
@@ -115,5 +115,7 @@
   yesBtn.addEventListener("click", () => {
     message.style.display = "block";
   });
-</script></body>
+</script>
+
+</body>
 </html>
