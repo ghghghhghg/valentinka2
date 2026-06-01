@@ -317,11 +317,17 @@
   const MAX_MOVES = 5;
 
   function getRandomPos() {
-    const margin = 20;
-    const btnW = 130, btnH = 56;
-    const x = margin + Math.random() * (window.innerWidth  - btnW - margin * 2);
-    const y = margin + Math.random() * (window.innerHeight - btnH - margin * 2);
-    return { x, y };
+    const margin = 16;
+    const btnW = noBtn.offsetWidth  || 130;
+    const btnH = noBtn.offsetHeight || 56;
+    const maxX = window.innerWidth  - btnW - margin;
+    const maxY = window.innerHeight - btnH - margin;
+    const x = margin + Math.random() * (maxX - margin);
+    const y = margin + Math.random() * (maxY - margin);
+    return {
+      x: Math.max(margin, Math.min(x, maxX)),
+      y: Math.max(margin, Math.min(y, maxY))
+    };
   }
 
   let isAnimating = false;
@@ -368,7 +374,7 @@
   });
 
   function launchHearts() {
-    const emojis = ["❤️ ","💕","🌸","✨","💗","💖"];
+    const emojis = ["❤️","💕","🌸","✨","💗","💖"];
     for (let i = 0; i < 18; i++) {
       setTimeout(() => {
         const el = document.createElement("div");
