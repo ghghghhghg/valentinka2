@@ -197,7 +197,6 @@
     #noBtn.flying {
       position: fixed;
       z-index: 9999;
-      pointer-events: none;
     }
 
     #noBtn.hidden {
@@ -325,7 +324,11 @@
     return { x, y };
   }
 
-  noBtn.addEventListener("click", (e) => {
+  let isAnimating = false;
+
+  noBtn.addEventListener("click", () => {
+    if (isAnimating) return;
+
     moveCount++;
 
     if (moveCount >= MAX_MOVES) {
@@ -333,9 +336,10 @@
       return;
     }
 
-    // First click: detach to fixed positioning
+    // First click: detach to fixed positioning without transition
     if (!noBtn.classList.contains("flying")) {
       const rect = noBtn.getBoundingClientRect();
+      noBtn.style.transition = "none";
       noBtn.classList.add("flying");
       noBtn.style.left  = rect.left + "px";
       noBtn.style.top   = rect.top  + "px";
@@ -343,12 +347,15 @@
     }
 
     const pos = getRandomPos();
-    // tiny delay so the transition fires after position is set
-    requestAnimationFrame(() => {
-      noBtn.style.transition = "left 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), top 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)";
-      noBtn.style.left = pos.x + "px";
-      noBtn.style.top  = pos.y + "px";
-    });
+    isAnimating = true;
+
+    // Force reflow so transition fires correctly
+    noBtn.getBoundingClientRect();
+    noBtn.style.transition = "left 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), top 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)";
+    noBtn.style.left = pos.x + "px";
+    noBtn.style.top  = pos.y + "px";
+
+    setTimeout(() => { isAnimating = false; }, 450);
   });
 
   yesBtn.addEventListener("click", () => {
@@ -361,7 +368,7 @@
   });
 
   function launchHearts() {
-    const emojis = ["❤️ ","💕","🌸","✨","💗","💖"];
+    const emojis = ["❤️","💕","🌸","✨","💗","💖"];
     for (let i = 0; i < 18; i++) {
       setTimeout(() => {
         const el = document.createElement("div");
