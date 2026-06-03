@@ -20,10 +20,10 @@ const photos = [
      caption: 'Подпись к фото 💕'
   },
   {
-  type: 'photo',
-  src: 'https://drive.google.com/file/d/12iPvL4-8uxqwaYz_SZCARdGNOuFd7GoL/previe',
+  type: 'video',
+  src: 'https://drive.google.com/file/d/12iPvL4-8uxqwaYz_SZCARdGNOuFd7GoL/preview',
   caption: 'gg'
-  },
+},
     {
     type: 'video',
     src: 'https://drive.google.com/file/d/1kaFfXLk9Mj7YLfHZyVvlE3YxJFODdIHS/preview',
