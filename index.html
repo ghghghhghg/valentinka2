@@ -472,6 +472,44 @@
       fill: var(--rose);
     }
 
+    /* ── Music button ── */
+    #musicBtn {
+      position: fixed;
+      bottom: max(24px, env(safe-area-inset-bottom, 24px));
+      left: 20px;
+      z-index: 9998;
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 4px 20px rgba(232, 97, 122, 0.25), 0 2px 6px rgba(0,0,0,0.08);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      padding: 0;
+    }
+    #musicBtn:hover { transform: scale(1.08); }
+    #musicBtn:active { transform: scale(0.93) !important; }
+    #musicBtn.playing {
+      background: rgba(232, 97, 122, 0.15);
+      box-shadow: 0 4px 20px rgba(232, 97, 122, 0.4), 0 2px 6px rgba(232,97,122,0.2);
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+    #musicBtn.playing .music-icon {
+      display: inline-block;
+      animation: spin 3s linear infinite;
+    }
+
     .footer {
       position: relative;
       z-index: 1;
@@ -524,6 +562,11 @@
 
   <div class="footer">Сайт разработан компанией <span>ABS[16.5++]</span></div>
 
+  <!-- Music button -->
+  <button id="musicBtn" title="Музыка">
+    <span class="music-icon">🎵</span>
+  </button>
+
   <!-- Gallery -->
   <div id="gallery">
     <button class="gallery-close" id="galleryClose">✕</button>
@@ -537,8 +580,15 @@
   </div>
 
 <script>
-    // ФОТО И ВИДЕО
- const photos = [
+  // ─────────────────────────────────────────────────────────────────────
+  //  МУЗЫКА — замени PUBLIC_ID на свой (уже вставлен ниже)
+  const MUSIC_SRC = 'https://res.cloudinary.com/dixqc2bze/video/upload/q_auto/Скриптонит_eh1j1c.mp3';
+
+  //  ФОТО И ВИДЕО — редактируй здесь
+  //  Фото: { src: '...', caption: 'Подпись 💕' }
+  //  Видео: { type: 'video', src: '....mp4', caption: 'Подпись 🎥' }
+  // ─────────────────────────────────────────────────────────────────────
+  const photos = [
     {
       src: 'https://res.cloudinary.com/dixqc2bze/image/upload/q_auto,f_auto/photo1_iz2nsd',
       caption: 'Наш первый день вместе 🌸'
@@ -579,11 +629,11 @@
       src: 'https://res.cloudinary.com/dixqc2bze/image/upload/q_auto,f_auto/photo10_gep9yc',
       caption: 'Наш первый день вместе 🌸'
     },
-        {
+    {
       src: 'https://res.cloudinary.com/dixqc2bze/image/upload/q_auto,f_auto/IMG_5785_olkhvi',
       caption: 'Наш первый день вместе 🌸'
     },
-        {
+    {
       src: 'https://res.cloudinary.com/dixqc2bze/image/upload/q_auto,f_auto/photo12_hf6gdt',
       caption: 'Наш первый день вместе 🌸'
     },
@@ -611,6 +661,12 @@
     },
   ];
   // ─────────────────────────────────────────────────────────────────────
+
+  // ── Music (declared early so video builders can reference) ──
+  const music      = new Audio(MUSIC_SRC);
+  music.loop       = true;
+  music.volume     = 0.5;
+  let musicPlaying = false;
 
   // ── No-button escape logic ──
   const noBtn         = document.getElementById('noBtn');
@@ -732,12 +788,21 @@
       overlay.addEventListener('click', () => {
         vid.controls = true;
         overlay.classList.add('hidden');
+        // Pause background music when video starts
+        if (typeof music !== 'undefined' && musicPlaying) music.pause();
         vid.play();
       });
 
       vid.addEventListener('ended', () => {
         vid.controls = false;
         overlay.classList.remove('hidden');
+        // Resume music when video ends
+        if (typeof music !== 'undefined' && musicPlaying) music.play().catch(() => {});
+      });
+
+      vid.addEventListener('pause', () => {
+        // Resume music if user pauses video via native controls
+        if (typeof music !== 'undefined' && musicPlaying && !vid.ended) music.play().catch(() => {});
       });
 
       photoBox.appendChild(vid);
@@ -812,6 +877,33 @@
     if (!swiping) return;
     const dx = e.changedTouches[0].clientX - touchStartX;
     if (Math.abs(dx) > 40) dx < 0 ? goTo(currentSlide + 1) : goTo(currentSlide - 1);
+  });
+
+  // ── Music button wiring ──
+  const musicBtn  = document.getElementById('musicBtn');
+  const musicIcon = musicBtn.querySelector('.music-icon');
+
+  function setMusicPlaying(val) {
+    musicPlaying = val;
+    musicBtn.classList.toggle('playing', val);
+    musicIcon.textContent = val ? '🎶' : '🎵';
+  }
+
+  musicBtn.addEventListener('click', () => {
+    if (musicPlaying) {
+      music.pause();
+      setMusicPlaying(false);
+    } else {
+      music.play().then(() => setMusicPlaying(true)).catch(() => {});
+    }
+  });
+
+  // Keyboard arrows for desktop
+  document.addEventListener('keydown', e => {
+    if (!gallery.classList.contains('open')) return;
+    if (e.key === 'ArrowRight') goTo(currentSlide + 1);
+    if (e.key === 'ArrowLeft')  goTo(currentSlide - 1);
+    if (e.key === 'Escape')     gallery.classList.remove('open');
   });
 </script>
 
