@@ -38,7 +38,6 @@
       position: relative;
     }
 
-    /* Mesh gradient background */
     body::before {
       content: '';
       position: fixed;
@@ -51,7 +50,6 @@
       z-index: 0;
     }
 
-    /* Floating petals */
     .petal {
       position: fixed;
       pointer-events: none;
@@ -67,7 +65,6 @@
       100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
     }
 
-    /* Main card */
     .card {
       position: relative;
       z-index: 1;
@@ -184,7 +181,6 @@
       pointer-events: none;
     }
 
-    /* Question block */
     .question-block {
       display: flex;
       flex-direction: column;
@@ -193,7 +189,6 @@
     }
     .question-block.hidden { display: none; }
 
-    /* Success message */
     #message {
       display: none;
       flex-direction: column;
@@ -234,7 +229,6 @@
       text-align: center;
     }
 
-    /* Memories button */
     #memoriesBtn {
       margin-top: 20px;
       background: transparent;
@@ -254,7 +248,7 @@
     }
     #memoriesBtn:hover { background: rgba(232,97,122,0.06); }
 
-    /* ── Gallery overlay ── */
+    /* ── Gallery ── */
     #gallery {
       position: fixed;
       inset: 0;
@@ -399,7 +393,6 @@
     .gallery-arrow.next { right: 12px; }
     .gallery-arrow.hide { opacity: 0; pointer-events: none; }
 
-    /* No-photo placeholder */
     .photo-placeholder {
       width: 100%;
       height: 100%;
@@ -418,6 +411,24 @@
     }
     .photo-placeholder .ph-icon { font-size: 44px; }
 
+    .gallery-slide.video-slide {
+      padding: 60px 0 60px;
+      justify-content: center;
+    }
+    .gallery-slide.video-slide .gallery-photo {
+      width: 100%;
+      aspect-ratio: unset;
+      height: 65dvh;
+      max-height: 65dvh;
+      border-radius: 0;
+      box-shadow: none;
+    }
+    .gallery-photo iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
     .footer {
       position: relative;
       z-index: 1;
@@ -432,32 +443,11 @@
       font-weight: 600;
       color: rgba(232, 97, 122, 0.55);
     }
-
-    .gallery-slide.video-slide {
-      padding: 60px 0 60px;
-      justify-content: center;
-    }
-
-    .gallery-slide.video-slide .gallery-photo {
-      width: 100%;
-      aspect-ratio: unset;
-      height: 65dvh;
-      max-height: 65dvh;
-      border-radius: 0;
-      box-shadow: none;
-    }
-
-    .gallery-photo iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
   </style>
 </head>
 
 <body>
 
-  <!-- Floating petals -->
   <div class="petal" style="left:8%;  animation-duration:9s;  animation-delay:0s;">🌸</div>
   <div class="petal" style="left:22%; animation-duration:11s; animation-delay:2s;">💕</div>
   <div class="petal" style="left:40%; animation-duration:8s;  animation-delay:4s;">🌸</div>
@@ -467,63 +457,74 @@
   <div class="petal" style="left:50%; animation-duration:12s; animation-delay:6s;">🌷</div>
   <div class="petal" style="left:15%; animation-duration:9s;  animation-delay:7s;">💗</div>
 
-  <!-- Main card -->
   <div class="card">
-
     <div class="heart-icon">❤️</div>
     <h1>Любовь моя, поздравляю с нашей небольшой годовщиной</h1>
     <div class="divider"></div>
 
-    <!-- Question -->
     <div class="question-block" id="questionBlock">
       <p class="question">Любишь ли ты меня?</p>
       <div class="buttons">
         <button id="yesBtn">Да 💖</button>
-        <button id="noBtn">Нет 😢n</button>
+        <button id="noBtn">Нет 😢</button>
       </div>
     </div>
 
-    <!-- Success message -->
     <div id="message">
       <div class="message-emoji">🥰</div>
       <div class="message-text">Я тебя тоже люблю!</div>
       <div class="message-sub">Больше, чем все звёзды на небе ✨</div>
     </div>
 
-    <!-- Memories button (appears after Yes) -->
     <button id="memoriesBtn">📸 Посмотреть наши воспоминания</button>
-
   </div>
 
-  <div class="footer">Сайт разработан компанией <span>ABS[16.5++]</span></div>
+  <div class="footer">Сайт разработан компанией <span>ABS</span></div>
 
-  <!-- Gallery overlay -->
+  <!-- Gallery -->
   <div id="gallery">
     <button class="gallery-close" id="galleryClose">✕</button>
-    <div class="gallery-counter" id="galleryCounter">1 / 5</div>
-
+    <div class="gallery-counter" id="galleryCounter">1 / 1</div>
     <button class="gallery-arrow prev hide" id="prevBtn">‹</button>
-    <button class="gallery-arrow next" id="nextBtn">›</button>
-
+    <button class="gallery-arrow next hide" id="nextBtn">›</button>
     <div class="gallery-track-wrap">
       <div class="gallery-track" id="galleryTrack"></div>
     </div>
-
     <div class="gallery-dots" id="galleryDots"></div>
   </div>
 
-<script src="photos.js"></script>
-
 <script>
-  // photos[] загружен из photos.js
-  // photos[] загружен из photos.js — редактируй там
+  // ─────────────────────────────────────────────────────────────────────
+  //  ФОТО И ВИДЕО — редактируй здесь
+  //
+  //  Фото с Cloudinary:
+  //  { src: 'https://res.cloudinary.com/...', caption: 'Подпись 💕' }
+  //
+  //  Видео (YouTube — рекомендуется):
+  //  { type: 'video', src: 'https://www.youtube.com/embed/VIDEO_ID', caption: 'Подпись 🎥' }
+  //
+  //  Видео (Google Drive — может не работать в некоторых браузерах):
+  //  { type: 'video', src: 'https://drive.google.com/file/d/ID/preview', caption: 'Подпись 🎥' }
+  // ─────────────────────────────────────────────────────────────────────
+  const photos = [
+    {
+      src: 'https://res.cloudinary.com/dixqc2bze/image/upload/q_auto,f_auto/photo1_iz2nsd',
+      caption: 'Наш первый день вместе 🌸'
+    },
+    {
+      type: 'video',
+      src: 'https://drive.google.com/file/d/1gast3ktBs86wVGpdSjPb6yST9AOTS1eo/preview',
+      caption: 'Наш момент 🎥'
+    },
+  ];
+  // ─────────────────────────────────────────────────────────────────────
 
-  // ── No-button escape logic ──────────────────
-  const noBtn        = document.getElementById('noBtn');
-  const yesBtn       = document.getElementById('yesBtn');
-  const message      = document.getElementById('message');
-  const questionBlock= document.getElementById('questionBlock');
-  const memoriesBtn  = document.getElementById('memoriesBtn');
+  // ── No-button escape logic ──
+  const noBtn         = document.getElementById('noBtn');
+  const yesBtn        = document.getElementById('yesBtn');
+  const message       = document.getElementById('message');
+  const questionBlock = document.getElementById('questionBlock');
+  const memoriesBtn   = document.getElementById('memoriesBtn');
 
   let moveCount = 0;
   const MAX_MOVES = 5;
@@ -535,23 +536,16 @@
     const btnH = noBtn.offsetHeight || 56;
     const maxX = window.innerWidth  - btnW - margin;
     const maxY = window.innerHeight - btnH - margin;
-    const x = margin + Math.random() * (maxX - margin);
-    const y = margin + Math.random() * (maxY - margin);
     return {
-      x: Math.max(margin, Math.min(x, maxX)),
-      y: Math.max(margin, Math.min(y, maxY))
+      x: Math.max(margin, Math.min(margin + Math.random() * (maxX - margin), maxX)),
+      y: Math.max(margin, Math.min(margin + Math.random() * (maxY - margin), maxY))
     };
   }
 
   noBtn.addEventListener('click', () => {
     if (isAnimating) return;
     moveCount++;
-
-    if (moveCount >= MAX_MOVES) {
-      noBtn.classList.add('hidden');
-      return;
-    }
-
+    if (moveCount >= MAX_MOVES) { noBtn.classList.add('hidden'); return; }
     if (!noBtn.classList.contains('flying')) {
       const rect = noBtn.getBoundingClientRect();
       noBtn.style.transition = 'none';
@@ -560,10 +554,9 @@
       noBtn.style.top   = rect.top  + 'px';
       noBtn.style.width = rect.width + 'px';
     }
-
     const pos = getRandomPos();
     isAnimating = true;
-    noBtn.getBoundingClientRect(); // force reflow
+    noBtn.getBoundingClientRect();
     noBtn.style.transition = 'left 0.4s cubic-bezier(0.34,1.56,0.64,1), top 0.4s cubic-bezier(0.34,1.56,0.64,1)';
     noBtn.style.left = pos.x + 'px';
     noBtn.style.top  = pos.y + 'px';
@@ -578,7 +571,7 @@
     launchHearts();
   });
 
-  // ── Heart burst animation ───────────────────
+  // ── Heart burst ──
   const burstStyle = document.createElement('style');
   burstStyle.textContent = `
     @keyframes burst {
@@ -606,14 +599,14 @@
     }
   }
 
-  // ── Gallery ─────────────────────────────────
-  const gallery      = document.getElementById('gallery');
-  const galleryClose = document.getElementById('galleryClose');
-  const galleryTrack = document.getElementById('galleryTrack');
-  const galleryDots  = document.getElementById('galleryDots');
-  const galleryCounter = document.getElementById('galleryCounter');
-  const prevBtn      = document.getElementById('prevBtn');
-  const nextBtn      = document.getElementById('nextBtn');
+  // ── Gallery ──
+  const gallery       = document.getElementById('gallery');
+  const galleryClose  = document.getElementById('galleryClose');
+  const galleryTrack  = document.getElementById('galleryTrack');
+  const galleryDots   = document.getElementById('galleryDots');
+  const galleryCounter= document.getElementById('galleryCounter');
+  const prevBtn       = document.getElementById('prevBtn');
+  const nextBtn       = document.getElementById('nextBtn');
 
   let currentSlide = 0;
 
@@ -635,12 +628,12 @@
     } else {
       const img = document.createElement('img');
       img.src = photo.src;
-      img.alt = photo.caption;
+      img.alt = photo.caption || '';
       img.onerror = () => {
         photoBox.innerHTML = `
           <div class="photo-placeholder">
             <div class="ph-icon">🖼️</div>
-            <div>Файл не найден:<br><b>${photo.src}</b><br>Положи фото рядом с HTML</div>
+            <div>Файл не найден:<br><b>${photo.src}</b></div>
           </div>`;
       };
       photoBox.appendChild(img);
@@ -648,7 +641,7 @@
 
     const caption = document.createElement('div');
     caption.className = 'gallery-caption';
-    caption.textContent = photo.caption;
+    caption.textContent = photo.caption || '';
 
     slide.appendChild(photoBox);
     slide.appendChild(caption);
@@ -660,7 +653,7 @@
   });
 
   function goTo(idx) {
-    // Pause any playing iframes before switching
+    // Pause iframes on leave
     document.querySelectorAll('.gallery-photo iframe').forEach(f => {
       const s = f.src; f.src = ''; f.src = s;
     });
@@ -675,12 +668,15 @@
 
   goTo(0);
 
-  memoriesBtn.addEventListener('click', () => { gallery.classList.add('open'); goTo(0); });
+  memoriesBtn.addEventListener('click', () => {
+    gallery.classList.add('open');
+    goTo(0);
+  });
   galleryClose.addEventListener('click', () => gallery.classList.remove('open'));
   prevBtn.addEventListener('click', () => goTo(currentSlide - 1));
   nextBtn.addEventListener('click', () => goTo(currentSlide + 1));
 
-  // Swipe
+  // Swipe support
   let touchStartX = 0, touchStartY = 0, swiping = false;
   gallery.addEventListener('touchstart', e => {
     touchStartX = e.touches[0].clientX;
