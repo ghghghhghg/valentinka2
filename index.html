@@ -412,21 +412,64 @@
     .photo-placeholder .ph-icon { font-size: 44px; }
 
     .gallery-slide.video-slide {
-      padding: 60px 0 60px;
+      padding: 60px 24px 80px;
       justify-content: center;
     }
     .gallery-slide.video-slide .gallery-photo {
-      width: 100%;
-      aspect-ratio: unset;
-      height: 65dvh;
+      width: min(88vw, 420px);
+      aspect-ratio: 9 / 16;
+      height: auto;
       max-height: 65dvh;
-      border-radius: 0;
-      box-shadow: none;
+      border-radius: 24px;
+      box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+      position: relative;
+      overflow: hidden;
     }
-    .gallery-photo iframe {
+
+    /* Native video element */
+    .gallery-photo video {
       width: 100%;
       height: 100%;
-      border: none;
+      object-fit: cover;
+      display: block;
+      border-radius: 24px;
+    }
+
+    /* Custom play overlay */
+    .video-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.28);
+      cursor: pointer;
+      border-radius: 24px;
+      transition: background 0.2s;
+    }
+    .video-overlay:hover { background: rgba(0,0,0,0.18); }
+    .video-overlay.hidden { display: none; }
+
+    .play-btn {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.92);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.35);
+      transition: transform 0.15s ease, background 0.15s;
+    }
+    .video-overlay:hover .play-btn {
+      transform: scale(1.08);
+      background: white;
+    }
+    .play-btn svg {
+      width: 28px;
+      height: 28px;
+      margin-left: 4px; /* optical center for triangle */
+      fill: var(--rose);
     }
 
     .footer {
@@ -479,7 +522,7 @@
     <button id="memoriesBtn">📸 Посмотреть наши воспоминания</button>
   </div>
 
-  <div class="footer">Сайт разработан компанией <span>ABS</span></div>
+  <div class="footer">Сайт разработан компанией <span>ABS[16.5++]</span></div>
 
   <!-- Gallery -->
   <div id="gallery">
@@ -500,11 +543,8 @@
   //  Фото с Cloudinary:
   //  { src: 'https://res.cloudinary.com/...', caption: 'Подпись 💕' }
   //
-  //  Видео (YouTube — рекомендуется):
-  //  { type: 'video', src: 'https://www.youtube.com/embed/VIDEO_ID', caption: 'Подпись 🎥' }
-  //
-  //  Видео (Google Drive — может не работать в некоторых браузерах):
-  //  { type: 'video', src: 'https://drive.google.com/file/d/ID/preview', caption: 'Подпись 🎥' }
+  //  Видео с Cloudinary:
+  //  { type: 'video', src: 'https://res.cloudinary.com/CLOUD/video/upload/q_auto/PUBLIC_ID.mp4', caption: 'Подпись 🎥' }
   // ─────────────────────────────────────────────────────────────────────
   const photos = [
     {
@@ -516,7 +556,7 @@
       src: 'https://res.cloudinary.com/dixqc2bze/video/upload/q_auto/IMG_0654_qcfjhr.mp4',
       caption: 'А как тебе то, что мы уже даже реагируем одинаково 🎥'
     },
-        {
+    {
       type: 'video',
       src: 'https://res.cloudinary.com/dixqc2bze/video/upload/q_auto/IMG_6126_lpt685.mp4',
       caption: 'Один из лучших наших вечеров 🎷'
@@ -625,11 +665,35 @@
 
     if (photo.type === 'video') {
       slide.classList.add('video-slide');
-      const iframe = document.createElement('iframe');
-      iframe.src = photo.src;
-      iframe.allow = 'autoplay';
-      iframe.allowFullscreen = true;
-      photoBox.appendChild(iframe);
+
+      const vid = document.createElement('video');
+      vid.src = photo.src;
+      vid.preload = 'metadata';
+      vid.playsInline = true;
+      vid.controls = false;
+
+      const overlay = document.createElement('div');
+      overlay.className = 'video-overlay';
+      overlay.innerHTML = `
+        <div class="play-btn">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+        </div>`;
+
+      overlay.addEventListener('click', () => {
+        vid.controls = true;
+        overlay.classList.add('hidden');
+        vid.play();
+      });
+
+      vid.addEventListener('ended', () => {
+        vid.controls = false;
+        overlay.classList.remove('hidden');
+      });
+
+      photoBox.appendChild(vid);
+      photoBox.appendChild(overlay);
     } else {
       const img = document.createElement('img');
       img.src = photo.src;
@@ -658,9 +722,12 @@
   });
 
   function goTo(idx) {
-    // Pause iframes on leave
-    document.querySelectorAll('.gallery-photo iframe').forEach(f => {
-      const s = f.src; f.src = ''; f.src = s;
+    // Pause all videos and reset overlays on slide change
+    document.querySelectorAll('.gallery-photo video').forEach(v => {
+      v.pause();
+      v.controls = false;
+      const overlay = v.parentElement.querySelector('.video-overlay');
+      if (overlay) overlay.classList.remove('hidden');
     });
     currentSlide = Math.max(0, Math.min(idx, photos.length - 1));
     galleryTrack.style.transform = `translateX(-${currentSlide * 100}%)`;
