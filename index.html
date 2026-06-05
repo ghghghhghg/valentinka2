@@ -679,20 +679,22 @@
   const MAX_MOVES = 5;
   let isAnimating = false;
 
-  // Позиции вычисляются от реального размера экрана
-  // Кнопка ~130×52px
+  // Позиции под iPhone 15 Pro Max (440×956 pt логические)
+  // Кнопка ~130×52px, pad=20 + safe area сверху ~60, снизу ~90
   function getNoPositions() {
-    const W = window.innerWidth;
-    const H = window.innerHeight;
+    const W = window.innerWidth;   // ~440
+    const H = window.innerHeight;  // ~956
     const bW = noBtn.offsetWidth  || 130;
     const bH = noBtn.offsetHeight || 52;
-    const pad = 20; // отступ от краёв
+    const padX   = 20;
+    const padTop = 70;   // под Dynamic Island
+    const padBot = 100;  // над Home Indicator
     return [
-      { x: W - bW - pad,     y: pad + 60 },           // правый верхний
-      { x: pad,              y: H - bH - pad - 60 },  // левый нижний
-      { x: W - bW - pad,     y: H - bH - pad - 60 },  // правый нижний
-      { x: pad,              y: pad + 60 },            // левый верхний
-      { x: (W - bW) / 2,    y: (H - bH) / 2 },       // центр
+      { x: W - bW - padX,    y: padTop },               // правый верхний
+      { x: padX,             y: H - bH - padBot },      // левый нижний
+      { x: W - bW - padX,    y: H - bH - padBot },      // правый нижний
+      { x: padX,             y: padTop },               // левый верхний
+      { x: (W - bW) / 2,    y: (H - bH) / 2 },         // центр
     ];
   }
 
