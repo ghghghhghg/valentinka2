@@ -560,7 +560,7 @@
     <button id="memoriesBtn">📸 Посмотреть наши воспоминания</button>
   </div>
 
-  <div class="footer">Сайт разработан компанией <span>ABS[16.5++]</span></div>
+  <div class="footer">Сайт разработан компанией <span>ABS</span></div>
 
   <!-- Music button -->
   <button id="musicBtn" title="Музыка">
@@ -679,17 +679,15 @@
   const MAX_MOVES = 5;
   let isAnimating = false;
 
-  function getRandomPos() {
-    const margin = 16;
-    const btnW = noBtn.offsetWidth  || 130;
-    const btnH = noBtn.offsetHeight || 56;
-    const maxX = window.innerWidth  - btnW - margin;
-    const maxY = window.innerHeight - btnH - margin;
-    return {
-      x: Math.max(margin, Math.min(margin + Math.random() * (maxX - margin), maxX)),
-      y: Math.max(margin, Math.min(margin + Math.random() * (maxY - margin), maxY))
-    };
-  }
+  // Фиксированные позиции для iPhone 15 Pro Max (430×932)
+  // Кнопка ~130×52px — координаты левого верхнего угла кнопки
+  const NO_POSITIONS = [
+    { x: 260, y: 120 },  // правый верхний угол
+    { x:  20, y: 740 },  // левый нижний угол
+    { x: 240, y: 820 },  // правый нижний угол
+    { x:  20, y: 100 },  // левый верхний угол
+    { x: 150, y: 480 },  // центр экрана
+  ];
 
   noBtn.addEventListener('click', () => {
     if (isAnimating) return;
@@ -703,7 +701,7 @@
       noBtn.style.top   = rect.top  + 'px';
       noBtn.style.width = rect.width + 'px';
     }
-    const pos = getRandomPos();
+    const pos = NO_POSITIONS[moveCount - 1];
     isAnimating = true;
     noBtn.getBoundingClientRect();
     noBtn.style.transition = 'left 0.4s cubic-bezier(0.34,1.56,0.64,1), top 0.4s cubic-bezier(0.34,1.56,0.64,1)';
