@@ -687,13 +687,13 @@
     const bW = noBtn.offsetWidth  || 130;
     const bH = noBtn.offsetHeight || 52;
     const padX   = 20;
-    const padTop = 70;   // под Dynamic Island
-    const padBot = 100;  // над Home Indicator
+    const padTop = 70;
+    const padBot = 100;
     return [
       { x: W - bW - padX,    y: padTop },               // правый верхний
-      { x: padX,             y: H - bH - padBot },      // левый нижний
+      { x: padX,             y: H * 0.55 },             // левый — середина низа (55% высоты)
       { x: W - bW - padX,    y: H - bH - padBot },      // правый нижний
-      { x: padX,             y: padTop },               // левый верхний
+      { x: padX,             y: padTop },                // левый верхний
       { x: (W - bW) / 2,    y: (H - bH) / 2 },         // центр
     ];
   }
