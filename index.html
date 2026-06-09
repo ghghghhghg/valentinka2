@@ -267,6 +267,14 @@
     }
     #letterBtn:hover { background: rgba(138,74,88,0.05); }
 
+    #letterBtn.locked {
+      opacity: 0.45;
+      border-style: dashed;
+      cursor: default;
+    }
+    #letterBtn.locked:hover { background: transparent; transform: none; }
+    #letterBtn.locked:active { transform: none !important; }
+
     /* ── Letter modal ── */
     #letterModal {
       position: fixed;
@@ -760,12 +768,19 @@
   <div id="letterModal">
     <div class="letter-card">
       <button class="letter-close" id="letterClose">✕</button>
-<div class="letter-heading">Ангелочку ❤️</div>
-  <div class="letter-body">Моя любовь,
-   Для меня поразительно, насколько мне с тобой кайфово заниматься чем угодно — будь то поход в «Мазапарк», бар, Приморские бани, крутой ресторан, джазовый клуб или просто продуктовый. Куда бы мы ни пошли и как бы ни проводили время, я знаю, что буду счастлив в этот момент.
-   Я обожаю тебя за то, какая ты смешная, весёлая, умная, сексуальная, красивая и милая. Этот список можно продолжать бесконечно, но главное, что ты должна знать: я тобой искренне восхищаюсь и люблю тебя.
-  </div>
-  <div class="letter-signature">Твой медвежонок 🐻</div>
+      <div class="letter-heading">Моей любимой ❤️</div>
+      <div class="letter-body">Привет, моя хорошая.
+
+Я не очень умею говорить красивые слова вслух, поэтому решил написать.
+
+Этот маленький сайт — просто способ сказать тебе то, что я чувствую каждый день, но иногда забываю произнести вслух.
+
+Ты делаешь меня лучше. Просто своим присутствием, своим смехом, своими странными мыслями в три часа ночи и утренним настроением до кофе.
+
+Я рад, что мы есть друг у друга.
+
+С каждым днём всё больше.</div>
+      <div class="letter-signature">Твой Кирилл 🌸</div>
     </div>
   </div>
 
@@ -942,6 +957,8 @@
     message.classList.add('visible');
     memoriesBtn.classList.add('visible');
     letterBtn.classList.add('visible');
+    letterBtn.classList.add('locked');
+    letterBtn.textContent = '🔒 Письмо для тебя';
     launchHearts();
   });
 
@@ -1082,7 +1099,14 @@
     gallery.classList.add('open');
     goTo(0);
   });
-  galleryClose.addEventListener('click', () => gallery.classList.remove('open'));
+  galleryClose.addEventListener('click', () => {
+    gallery.classList.remove('open');
+    // Разблокировать письмо после просмотра галереи
+    if (letterBtn.classList.contains('locked')) {
+      letterBtn.classList.remove('locked');
+      letterBtn.textContent = '✉️ Письмо для тебя';
+    }
+  });
   prevBtn.addEventListener('click', () => goTo(currentSlide - 1));
   nextBtn.addEventListener('click', () => goTo(currentSlide + 1));
 
@@ -1124,8 +1148,19 @@
   });
 
   // ── Letter modal ──
+  let galleryWatched = false;
   const letterModal = document.getElementById('letterModal');
-  letterBtn.addEventListener('click', () => letterModal.classList.add('open'));
+
+  letterBtn.addEventListener('click', () => {
+    if (letterBtn.classList.contains('locked')) {
+      // Открыть галерею вместо письма
+      gallery.classList.add('open');
+      goTo(0);
+    } else {
+      letterModal.classList.add('open');
+    }
+  });
+
   document.getElementById('letterClose').addEventListener('click', () => letterModal.classList.remove('open'));
   letterModal.addEventListener('click', e => {
     if (e.target === letterModal) letterModal.classList.remove('open');
