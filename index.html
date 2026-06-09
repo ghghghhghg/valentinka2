@@ -639,6 +639,26 @@
       animation: spin 3s linear infinite;
     }
 
+    #musicHint {
+      position: fixed;
+      bottom: max(32px, calc(env(safe-area-inset-bottom, 24px) + 8px));
+      left: 74px;
+      z-index: 9998;
+      font-family: 'Nunito', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      color: rgba(138, 74, 88, 0.6);
+      letter-spacing: 0.02em;
+      pointer-events: none;
+      animation: hintPulse 2.5s ease-in-out infinite;
+      white-space: nowrap;
+    }
+    #musicHint.hidden { display: none; }
+    @keyframes hintPulse {
+      0%, 100% { opacity: 0.6; }
+      50%       { opacity: 1; }
+    }
+
     .footer {
       position: relative;
       z-index: 1;
@@ -776,6 +796,7 @@
   <button id="musicBtn" title="Музыка">
     <span class="music-icon">🎵</span>
   </button>
+  <div id="musicHint">нажми на меня ↑</div>
 
   <!-- Gallery -->
   <div id="gallery">
@@ -1161,6 +1182,7 @@
   }
 
   musicBtn.addEventListener('click', () => {
+    document.getElementById('musicHint').classList.add('hidden');
     if (musicPlaying) {
       music.pause();
       setMusicPlaying(false);
