@@ -275,6 +275,31 @@
     #letterBtn.locked:hover { background: transparent; transform: none; }
     #letterBtn.locked:active { transform: none !important; }
 
+    /* ── Toast ── */
+    #toast {
+      position: fixed;
+      bottom: max(90px, calc(env(safe-area-inset-bottom, 24px) + 66px));
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: rgba(30, 10, 15, 0.88);
+      backdrop-filter: blur(12px);
+      color: white;
+      font-family: 'Nunito', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 12px 22px;
+      border-radius: 50px;
+      white-space: nowrap;
+      z-index: 99999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+    #toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
     /* ── Letter modal ── */
     #letterModal {
       position: fixed;
@@ -764,6 +789,9 @@
     <div class="gallery-dots" id="galleryDots"></div>
   </div>
 
+  <!-- Toast -->
+  <div id="toast"></div>
+
   <!-- Letter modal -->
   <div id="letterModal">
     <div class="letter-card">
@@ -1141,15 +1169,23 @@
     }
   });
 
+  // ── Toast ──
+  let toastTimer;
+  function showToast(text) {
+    const toast = document.getElementById('toast');
+    toast.textContent = text;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 2500);
+  }
+
   // ── Letter modal ──
   let galleryWatched = false;
   const letterModal = document.getElementById('letterModal');
 
   letterBtn.addEventListener('click', () => {
     if (letterBtn.classList.contains('locked')) {
-      // Открыть галерею вместо письма
-      gallery.classList.add('open');
-      goTo(0);
+      showToast('Сначала просмотри воспоминания 📸');
     } else {
       letterModal.classList.add('open');
     }
